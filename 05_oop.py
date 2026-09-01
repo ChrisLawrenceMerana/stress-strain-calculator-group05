@@ -53,6 +53,19 @@ class Metal(Material):
         self.is_ferrous = is_ferrous
         self.ductility_pct = ductility_pct
 
+class Plastic(Material):
+    """Subclass for plastic materials."""
+    def __init__(
+        self,
+        name: str,
+        properties: MaterialProperties,
+        glass_transition_temp: Optional[float] = None, #Temperature (°C) where polymer becomes rubbery.
+    ):
+        super().__init__(name, properties)
+        self.glass_transition_temp = glass_transition_temp
+
+
+
 class StressStrainTest:
     """A single stress-strain test."""
 
