@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+# 1. Base Materials Class and Properties
 
 @dataclass
 class MaterialProperties:
@@ -35,6 +36,22 @@ class Material:
         # Convert GPa to MPa for comparison
         return stress < self.properties.yield_strength
 
+# 2. Specialized Material Subclasses
+
+class Metal(Material):
+    """Subclass for metal materials."""
+    def __init__(
+        self,
+        name: str,
+        properties: MaterialProperties,
+        is_ferrous: bool = False,
+        ductility_pct: float = 0.0,
+    ):
+        super().__init__(name, properties)
+        if ductility_pct < 0:
+            raise ValueError("Ductility percentage must be non-negative")
+        self.is_ferrous = is_ferrous
+        self.ductility_pct = ductility_pct
 
 class StressStrainTest:
     """A single stress-strain test."""
