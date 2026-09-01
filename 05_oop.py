@@ -159,3 +159,76 @@ class StressStrainTest:
             f"Strain={self.strain:.6f}, "
             f"Young's Modulus={self.youngs_modulus:.2f} GPa"
         )
+
+# 4. Material Analysis and Table
+
+class MaterialAnalysisSystem:
+    """Combines multiple test records to analyze material performance."""
+
+    def __init__ (self, tests: Optional[List[StressStrainTest]] = None):
+        self.tests: List[StressStrainTest] = tests or []
+
+    def add_test(self, test: StressStrainTest) -> None:
+        self.tests.append(test)
+
+    def generate_summary_report(self) -> str: 
+        if not self.tests:
+            return "No test records found."
+
+        headers = [
+            "Materal Name",
+            "Class",
+            "Stress (MPa)",
+            "Strain",
+            "Test E (GPa)",
+            "Nom. E (GPa)",
+            "Safety Factor",
+            "Status",
+        ]
+
+        row_fmt = "{:<16} {:<12} {:<13.2f} {:<10.4f} {:<13.2f} {:<13.2f} {:<14.2f} {:<8}"
+        width = 100
+
+        lines = [
+            "=" * width,
+            "Material Analysis Summary Report".center(width),
+            "=" * width,
+            "{:<16}{:<12}{:<13}{:<10}{:<13}{:<13}{:<14}{:<8}".format(*headers),
+            "-" * width,
+        ]
+
+        for t in self.tests:
+            status = "FAIL" if t.will_fail() else "PASS"
+            lines.append(
+                row_fmt.format(
+                    t.material.name,
+                    t.material.__class__.__name__,
+                    t.stress,
+                    t.strain,
+                    t.youngs_modulus,
+                    t.material.properties.typical_youngs_modulus,
+                    t.safety_factor,
+                    status
+                )
+            )
+
+        lines.append("=" * width)
+        return "\n".join(lines)
+
+#Demonstration
+
+if __name__ == "__main__":
+    steel_props = MaterialProperties(7850, 250, 200)
+    abs_props = MaterialProperties(1040, 40, 2.3)
+    cfrp_props = MaterialProperties(1600, 600, 135)
+
+    steel = Metal('Steel', steel_props, True, 22.0)
+    plastic = Plastic('Plastic', abs_props, 105.0)
+    composite = Composite('Carbon Fiber', cfrp_props, 'Carbon Fiber')
+
+    test_steel = StressStrainTest(steel, 5000, 25, 100, 0.10)
+    test_plastic = StressStrainTest(plastic, 1200, 25, 100, 2.08)
+    test_composite = StressStrainTest(composite, 10000, 25, 100, 0.30)
+
+    analyzer = MaterialAnalysisSystem([test_steel, test_plastic, test_composite])
+    print(analyzer.generate_summary_report())
