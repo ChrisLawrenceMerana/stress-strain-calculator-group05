@@ -53,6 +53,15 @@ class Metal(Material):
         self.is_ferrous = is_ferrous
         self.ductility_pct = ductility_pct
 
+    def __str__(self) -> str:
+        """Extends string format to display ferrous status and ductility."""
+        ferrous_text = "Ferrous" if self.is_ferrous else "Non-ferrous"
+        return (
+            f"{self.name} ({ferrous_text} metal, "
+            f"Density: {self.properties.density} kg/m³, "
+            f"Ductility: {self.ductility_pct}%)"
+        )
+
 class Plastic(Material):
     """Subclass for plastic materials."""
     def __init__(
@@ -64,7 +73,27 @@ class Plastic(Material):
         super().__init__(name, properties)
         self.glass_transition_temp = glass_transition_temp
 
+    def __str__(self) -> str:
+        """Extends string format to display glass transition temperature."""
+        return f"{self.name} (Polymer, Tg: {self.glass_transition_temp}°C, Density: {self.properties.density} kg/m³)"
 
+class Composite(Material):
+    """Subclass for composite materials."""
+
+    def __init__(
+        self,
+        name: str,
+        properties: MaterialProperties,
+        reinforcement_type: str, #Type of reinforcement (e.g., Carbon Fiber, Woven Glass, etc.)
+    ):
+        super().__init__ ( name, properties)
+        self.reinforcement_type = reinforcement_type
+
+    def __str__ (self) -> str:
+        """Extends string format to display reinforcement type."""
+        return f"{self.name} (Composite [{self.reinforcement_type}], Density: {self.properties.density} kg/m³)"
+
+#3. Stress-Strain Test Class
 
 class StressStrainTest:
     """A single stress-strain test."""
