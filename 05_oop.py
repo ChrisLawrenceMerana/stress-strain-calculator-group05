@@ -106,11 +106,6 @@ class StressStrainTest:
         original_length: float,
         change_in_length: float,
     ):
-        self.material = material
-        self._force = force
-        self._area = area
-        self._original_length = original_length
-        self._change_in_length = change_in_length
 
         # Validate inputs
         if force <= 0:
@@ -120,6 +115,12 @@ class StressStrainTest:
         if original_length <= 0:
             raise ValueError("Original length must be positive")
         # Change in length can be negative (compression)
+
+        self.material = material
+        self._force = force
+        self._area = area
+        self._original_length = original_length
+        self._change_in_length = change_in_length
 
     @property
     def stress(self) -> float:
@@ -137,9 +138,19 @@ class StressStrainTest:
         # Convert to GPa from MPa
         return (self.stress / self.strain) / 1000
 
+    @property
+    def safety_factor(self) -> float:
+        """Calculate the safety factor."""
+        return self.material.properties.yield_strength / self.stress
+
     def will_fail(self) -> bool:
         """Determine if the material is likely to fail under this test."""
         return not self.material.can_withstand_stress(self.stress)
+
+    def modulus_deviation_pct(self) -> float:
+        """Calculate the relative discrepancy (%) between the theoretical and measured stiffness."""
+        expected = self.material.properties.typical_youngs_modulus
+        return abs(self.youngs_modulus - expected) / expected * 100
 
     def __str__(self) -> str:
         return (
@@ -148,35 +159,3 @@ class StressStrainTest:
             f"Strain={self.strain:.6f}, "
             f"Young's Modulus={self.youngs_modulus:.2f} GPa"
         )
-
-
-# Example material subclass
-class Metal(Material):
-    """A metal material."""
-
-    def __init__(
-        self, name: str, properties: MaterialProperties, is_ferrous: bool = False
-    ):
-        super().__init__(name, properties)
-        self.is_ferrous = is_ferrous
-
-    def __str__(self) -> str:
-        ferrous_text = "Ferrous" if self.is_ferrous else "Non-ferrous"
-        return f"{self.name} ({ferrous_text} metal, Density: {self.properties.density} kg/m³)"
-
-
-# Example usage
-steel_properties = MaterialProperties(
-    density=7850, yield_strength=250, typical_youngs_modulus=200  # MPa  # GPa
-)
-
-steel = Metal("Steel", steel_properties, is_ferrous=True)
-test = StressStrainTest(
-    steel, force=5000, area=25, original_length=100, change_in_length=0.5
-)
-
-print(steel)
-print(test)
-print(f"Will the material fail? {'Yes' if test.will_fail() else 'No'}")
-print(f"Calculated Young's modulus: {test.youngs_modulus:.2f} GPa")
-print(f"Typical Young's modulus: {steel.properties.typical_youngs_modulus:.2f} GPa")
