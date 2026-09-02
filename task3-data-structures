@@ -19,8 +19,8 @@ def main():
     # Each material should have yield_strength and youngs_modulus
     materials_database = {
         "Steel": {"yield_strength": 250000000.0, "youngs_modulus": 200000000000.0},
-        "Aluminum": {"yield_strength": 275000000.0, "youngs_modulus": 70000000000.0},
-        "Titanium": {"yield_strength": 200000000.0, "youngs_modulus": 115000000000.0}
+        "Aluminum": {"yield_strength": 95000000.0, "youngs_modulus": 69000000000.0},
+        "Titanium": {"yield_strength": 880000000.0, "youngs_modulus": 114000000000.0}
     }
 
     # Main calculation loop
