@@ -12,3 +12,17 @@ def get_positive_float(prompt):
                 return value
         except ValueError:
             print("Error: Invalid input. Please enter a number.")
+
+def calculate_stress(force, area):
+    """Calculates the stress on a material."""
+    return force / area
+
+def calculate_strain(change_in_length, original_length):
+    """Calculates the strain on a material."""
+    return change_in_length / original_length
+
+def calculate_youngs_modulus(stress, strain):
+    """Calculates Young's Modulus, preventing division by zero."""
+    if strain == 0:
+        return 0.0
+    return stress / strain
