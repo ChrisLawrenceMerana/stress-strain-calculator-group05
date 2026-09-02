@@ -26,3 +26,21 @@ def calculate_youngs_modulus(stress, strain):
     if strain == 0:
         return 0.0
     return stress / strain
+
+def display_results(force, area, orig_len, change_len, stress, strain, modulus):
+    """
+    Formats and prints the test results.
+    Takes the variables as parameters instead of relying on global variables.
+    """
+    print("\n" + "=" * 35)
+    print("           TEST RESULTS           ")
+    print("=" * 35)
+    print(f"Applied Force            : {force:,.2f} N")
+    print(f"Cross-Sectional Area     : {area:.6f} m²")
+    print(f"Original Length          : {orig_len:.4f} m")
+    print(f"Change in Length         : {change_len:.6f} m")
+    print("-" * 35)
+    print(f"Calculated Stress        : {stress:,.2f} Pa ({stress / 1e6:.2f} MPa)")
+    print(f"Calculated Strain        : {strain:.6f} (or {strain * 100:.4f}%)")
+    print(f"Young's Modulus          : {modulus:,.2f} Pa ({modulus / 1e9:.2f} GPa)")
+    print("=" * 35)
