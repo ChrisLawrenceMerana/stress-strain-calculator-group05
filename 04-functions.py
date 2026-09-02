@@ -27,6 +27,12 @@ def calculate_youngs_modulus(stress, strain):
         return 0.0
     return stress / strain
 
+def calculate_factor_of_safety(yield_strength, stress):
+    """Calculates the factor of safety."""
+    if stress == 0:
+        return 0.0
+    return yield_strength / stress
+
 def display_results(force, area, orig_len, change_len, stress, strain, modulus):
     """
     Formats and prints the test results.
