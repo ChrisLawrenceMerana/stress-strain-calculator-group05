@@ -1,65 +1,45 @@
-# Part 3: Data Structures - Stress and Strain Calculator Template
-
 def main():
     """Main function for the stress and strain calculator with data structures."""
 
     print("=== Stress and Strain Calculator - Session Manager ===")
     print()
 
-    # TODO: Initialize empty list for calculation history
     history = []
 
-    # TODO: Initialize empty set for unique materials
     unique_materials = set()
 
-    # TODO: Create tuple for measurement units (N, m², m, Pa)
     units = ("N", "m²", "m", "Pa")
 
-    # TODO: Create materials database dictionary with at least 3 materials
-    # Each material should have yield_strength and youngs_modulus
     materials_database = {
         "Steel": {"yield_strength": 250000000.0, "youngs_modulus": 200000000000.0},
         "Aluminum": {"yield_strength": 95000000.0, "youngs_modulus": 69000000000.0},
         "Titanium": {"yield_strength": 880000000.0, "youngs_modulus": 114000000000.0}
     }
 
-    # Main calculation loop
     while True:
-        # TODO: Display available materials
         print("\nAvailable materials: Steel, Aluminum, Titanium")
-
-        # TODO: Get material selection from user
         material = input("Enter a material (or type 'quit' to exit): ").strip()
 
-        # TODO: Check if user wants to quit
         if material.lower() == "quit":
             break
 
         material = material.title()
 
         try:
-            # TODO: Get input values (force, area, original_length, change_in_length)
             force = float(input("Enter force: "))
             area = float(input("Enter area: "))
             original_length = float(input("Enter original length: "))
             change_in_length = float(input("Enter change in length: "))
 
-            # TODO: Validate inputs (positive values, non-zero where needed)
             if force < 0 or area <= 0 or original_length <= 0 or change_in_length < 0:
                 print("Error: Area and length must be greater than 0")
                 continue
 
-            # TODO: Calculate stress and strain
             stress = force / area
             strain = change_in_length / original_length
-
-            # TODO: Get material properties from database
             yield_strength = materials_database[material]["yield_strength"]
-
-            # TODO: Calculate safety factor
             safety_factor = yield_strength / stress
 
-            # TODO: Create calculation record dictionary with all data
             record = {
                 "material": material,
                 "force": force,
@@ -71,13 +51,9 @@ def main():
                 "safety_factor": safety_factor
             }
 
-            # TODO: Add record to history list
             history.append(record)
-
-            # TODO: Add material to unique materials set
             unique_materials.add(material)
 
-            # TODO: Display results for this calculation
             print("\nResults:")
             print("Stress:", stress, units[3])
             print("Strain:", strain)
@@ -92,11 +68,6 @@ def main():
         except KeyError:
             print("Error: Material not found in database!")
 
-    # TODO: Display session summary
-    # - Total number of calculations
-    # - List of unique materials tested
-    # - Detailed history of each calculation
-
     print("\nSession Summary:")
     print("Total calculations:", len(history))
     
@@ -106,11 +77,6 @@ def main():
         for record in history:
             print("Material:", record["material"], "| Stress:", record["stress"], "| Safety Factor:", record["safety_factor"])
 
-        # TODO: Display statistics (optional)
-        # - Highest stress
-        # - Lowest safety factor
-        # - Average strain
-        # - Material test counts
         print("\nStatistics:")
         highest_stress = 0.0
         lowest_sf = 99999999.0  
@@ -146,7 +112,5 @@ def main():
         print("No tests were run.")
 
 
-# Standard Python execution pattern
 if __name__ == "__main__":
     main()
-
