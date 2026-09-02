@@ -97,15 +97,56 @@ def main():
     # - List of unique materials tested
     # - Detailed history of each calculation
 
-    # TODO: Display statistics (optional)
-    # - Highest stress
-    # - Lowest safety factor
-    # - Average strain
-    # - Material test counts
+    print("\nSession Summary:")
+    print("Total calculations:", len(history))
+    
+    if len(history) > 0:
+        print("Unique materials tested:", unique_materials)
+        print("\nCalculation History:")
+        for record in history:
+            print("Material:", record["material"], "| Stress:", record["stress"], "| Safety Factor:", record["safety_factor"])
+
+        # TODO: Display statistics (optional)
+        # - Highest stress
+        # - Lowest safety factor
+        # - Average strain
+        # - Material test counts
+        print("\nStatistics:")
+        highest_stress = 0.0
+        lowest_sf = 99999999.0  
+        total_strain = 0.0
+        
+        for record in history:
+            if record["stress"] > highest_stress:
+                highest_stress = record["stress"]
+                
+            if record["safety_factor"] < lowest_sf:
+                lowest_sf = record["safety_factor"]
+                
+            total_strain = total_strain + record["strain"]
+            
+        average_strain = total_strain / len(history)
+        
+        print("Highest stress:", highest_stress)
+        print("Lowest safety factor:", lowest_sf)
+        print("Average strain:", average_strain)
+        
+        counts = {}
+        for record in history:
+            mat = record["material"]
+            if mat in counts:
+                counts[mat] = counts[mat] + 1
+            else:
+                counts[mat] = 1
+                
+        print("\nMaterial Test Counts:")
+        for mat in counts:
+            print("-", mat, ":", counts[mat])
+    else:
+        print("No tests were run.")
 
 
 # Standard Python execution pattern
 if __name__ == "__main__":
     main()
 
-#last line
