@@ -39,22 +39,49 @@ def main():
 
         try:
             # TODO: Get input values (force, area, original_length, change_in_length)
+            force = float(input("Enter force: "))
+            area = float(input("Enter area: "))
+            original_length = float(input("Enter original length: "))
+            change_in_length = float(input("Enter change in length: "))
 
             # TODO: Validate inputs (positive values, non-zero where needed)
+            if force < 0 or area <= 0 or original_length <= 0 or change_in_length < 0:
+                print("Error: Area and length must be greater than 0")
+                continue
 
             # TODO: Calculate stress and strain
+            stress = force / area
+            strain = change_in_length / original_length
 
             # TODO: Get material properties from database
+            yield_strength = materials_database[material]["yield_strength"]
 
             # TODO: Calculate safety factor
+            safety_factor = yield_strength / stress
 
             # TODO: Create calculation record dictionary with all data
+            record = {
+                "material": material,
+                "force": force,
+                "area": area,
+                "original_length": original_length,
+                "change_in_length": change_in_length,
+                "stress": stress,
+                "strain": strain,
+                "safety_factor": safety_factor
+            }
 
             # TODO: Add record to history list
+            history.append(record)
 
             # TODO: Add material to unique materials set
+            unique_materials.add(material)
 
             # TODO: Display results for this calculation
+            print("\nResults:")
+            print("Stress:", stress, units[3])
+            print("Strain:", strain)
+            print("Safety Factor:", safety_factor)
 
             pass
 
