@@ -44,3 +44,24 @@ def display_results(force, area, orig_len, change_len, stress, strain, modulus):
     print(f"Calculated Strain        : {strain:.6f} (or {strain * 100:.4f}%)")
     print(f"Young's Modulus          : {modulus:,.2f} Pa ({modulus / 1e9:.2f} GPa)")
     print("=" * 35)
+
+def main():
+    """Coordinates the inputs, calculations, and outputs."""
+    print("Stress and Strain Calculator")
+
+    applied_force = get_positive_float("Enter applied force in Newtons: ")
+    cross_sectional_area = get_positive_float("Enter cross-sectional area in square meters: ")
+    original_length = get_positive_float("Enter original length in meters: ")
+    change_in_length = get_positive_float("Enter change in length in meters: ")
+
+    stress = calculate_stress(applied_force, cross_sectional_area)
+    strain = calculate_strain(change_in_length, original_length)
+    youngs_modulus = calculate_youngs_modulus(stress, strain)
+    
+    display_results(
+        applied_force, cross_sectional_area, original_length, 
+        change_in_length, stress, strain, youngs_modulus
+    )
+
+if __name__ == "__main__":
+    main()
