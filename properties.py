@@ -10,3 +10,5 @@ class MaterialProperties:
     density: float  # kg/m³
     yield_strength: float  # MPa
     typical_youngs_modulus: float  # GPa
+
+# test
