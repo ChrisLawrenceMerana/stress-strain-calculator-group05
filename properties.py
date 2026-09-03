@@ -19,3 +19,7 @@ class MaterialProperties:
             raise ValueError("Yield strength must be positive")
         if self.typical_youngs_modulus:
             raise ValueError("Young's modulus must be positive")
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert properties to dictionary format"""
+        return asdict(self)
