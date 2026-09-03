@@ -52,3 +52,5 @@ class Metal(Material):
         data = super().to_dict()
         data.update({"is_ferrous": self.is_ferrous, "ductility_pct": self.ductility_pct})
         return data
+
+    #test
