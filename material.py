@@ -73,3 +73,23 @@ class Metal(Material):
             data = super().to_dict()
             data["glass_transition_temp"] = self.glass_transition_temp
             return data
+
+    class Composite(Material):
+        """Subclass for composite materials."""
+
+        def __init__(
+            self,
+            name: str,
+            properties: MaterialProperties,
+            reinforcement_type: str,   
+        ):
+            super().__init__(name, properties)
+            self.reinforcement_type = reinforcement_type
+
+        def __str__(self) -> str:
+            return f"{self.name} (Composite [{self.reinforcement_type}], Density: {self.properties.density} kg/m³)"
+
+        def to_dict(self) -> Dict[str, Any]:
+            data = super().to_dict()
+            data["reinforcement_type"] = self.reinforcement_type
+            return data
