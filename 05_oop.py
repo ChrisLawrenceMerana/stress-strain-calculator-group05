@@ -138,26 +138,15 @@ class StressStrainTest:
         # Convert to GPa from MPa
         return (self.stress / self.strain) / 1000
 
-    @property
-    def safety_factor(self) -> float:
-        """Calculate the safety factor."""
-        return self.material.properties.yield_strength / self.stress
-
     def will_fail(self) -> bool:
         """Determine if the material is likely to fail under this test."""
         return not self.material.can_withstand_stress(self.stress)
-
-    def modulus_deviation_pct(self) -> float:
-        """Calculate the relative discrepancy (%) between the theoretical and measured stiffness."""
-        expected = self.material.properties.typical_youngs_modulus
-        return abs(self.youngs_modulus - expected) / expected * 100
 
     def __str__(self) -> str:
         return (
             f"Test on {self.material.name}: "
             f"Stress={self.stress:.2f} MPa, "
             f"Strain={self.strain:.6f}, "
-            f"Young's Modulus={self.youngs_modulus:.2f} GPa"
         )
 
 # 4. Material Analysis and Table
@@ -180,9 +169,6 @@ class MaterialAnalysisSystem:
             "Class",
             "Stress (MPa)",
             "Strain",
-            "Test E (GPa)",
-            "Nom. E (GPa)",
-            "Safety Factor",
             "Status",
         ]
 
@@ -193,7 +179,7 @@ class MaterialAnalysisSystem:
             "=" * width,
             "Material Analysis Summary Report".center(width),
             "=" * width,
-            "{:<16}{:<12}{:<13}{:<10}{:<13}{:<13}{:<14}{:<8}".format(*headers),
+            "{:<16}{:<12}{:<13}{:<10}{:<13}".format(*headers),
             "-" * width,
         ]
 
@@ -205,9 +191,6 @@ class MaterialAnalysisSystem:
                     t.material.__class__.__name__,
                     t.stress,
                     t.strain,
-                    t.youngs_modulus,
-                    t.material.properties.typical_youngs_modulus,
-                    t.safety_factor,
                     status
                 )
             )
