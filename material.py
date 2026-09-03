@@ -53,4 +53,23 @@ class Metal(Material):
         data.update({"is_ferrous": self.is_ferrous, "ductility_pct": self.ductility_pct})
         return data
 
-    #test
+    class Plastic(Material):
+        """Subclass for plastic materials."""
+
+        def __init__(
+            self,
+            name: str,
+            properties: MaterialProperties,
+            glass_transition_temp: Optional[float] = None,
+        ):
+            super().__init__(name, properties)
+            self.glass_transition_temp = glass_transition_temp
+
+        def __str__(self) -> str:
+            tg_val = f"self.glass_transition_temp)°C" if self.glass_transition_temp is not None else "N/A"
+            return f"{self.name} (Polymer, Tg: {tg_val}, Density: {self.properties.density} kg/m³)"
+
+        def to_dict(self) -> Dict[str,Any]:
+            data = super().to_dict()
+            data["glass_transition_temp"] = self.glass_transition_temp
+            return data
