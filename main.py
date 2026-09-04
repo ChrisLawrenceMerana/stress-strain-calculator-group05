@@ -1,5 +1,6 @@
 """Main stress-strain test program with JSON persistence."""
 
+import csv
 import json
 import database
 from material import Material
@@ -17,6 +18,34 @@ def save_results_to_json(results_data: list, filename: str = "test_results.json"
     except Exception as e:
         print(f"\nError saving results: {e}")
 
+def save_results_to_csv(results_data: list, filename: str = "test_results.csv") -> None:
+    """Saves a list of test result dictionaries into a CSV file."""
+    try:
+        with open(filename, "w", newline="") as file:
+            writer = csv.writer(file)
+            
+            writer.writerow([
+                "Material", "Force (N)", "Area (m²)", "Original Length (m)", 
+                "Change in Length (m)", "Stress (Pa)", "Strain", 
+                "Youngs Modulus (Pa)", "Safety Factor", "Failed"
+            ])
+            
+            for test in results_data:
+                writer.writerow([
+                    test["material"],
+                    test["force_N"],
+                    test["area_m2"],
+                    test["original_length_m"],
+                    test["change_in_length_m"],
+                    test["stress_Pa"],
+                    test["strain"],
+                    test["youngs_modulus_Pa"],
+                    test["safety_factor"],
+                    test["failed"]
+                ])
+        print(f"Results successfully saved to '{filename}'.")
+    except Exception as e:
+        print(f"\nError saving results to CSV: {e}")
 
 def load_results_from_json(filename: str = "test_results.json") -> list:
     """Loads and returns test result data from a JSON file."""
@@ -98,9 +127,10 @@ def main():
             print("Exiting calculator.")
             break
 
-    # Save all test records to JSON upon exiting
+    # Save all test records to JSON and csv upon exiting
     if session_results:
         save_results_to_json(session_results)
+        save_results_to_csv(session_results)
 
 
 if __name__ == "__main__":
