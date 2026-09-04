@@ -1,3 +1,4 @@
+"""Module that contains reusable calculation and conversion utilities."""
 
 materials={
             "Steel": {"yield_strength": 250, "youngs_modulus": 200},
@@ -5,7 +6,9 @@ materials={
             "Titanium": {"yield_strength": 880, "youngs_modulus": 114}
         }
 
+#Loop
 def Loop():
+    """Establishes a simple menu that will query the user on whether to start/continue calculations or exit."""
     while True:
         try:
             start=int(input("Welcome to the Stress and Strain Calculator! Press 1 to begin calculating, and 2 to exit the program! "))
@@ -58,3 +61,16 @@ def MatSelect():
         print('Invalid Input!')
         return
 
+#SafetyAnalysis
+def SafetyAna():
+        """Carries out calculations of Safety Analysis based on inputs from the MatSelect function."""
+        load=materials[chosen]["yield_strength"]-stress
+        factor=materials[chosen]["yield_strength"]/stress
+        if load>materials[chosen]["yield_strength"]*0.10:
+            load='SAFE'
+        elif load<=materials[chosen]["yield_strength"]*0.10:
+            load='CAUTION'
+        else:
+            print("Error. Invalid input recieved.")
+        print(f'{load} - FACTOR OF SAFETY: {factor}')
+        
