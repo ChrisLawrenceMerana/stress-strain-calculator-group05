@@ -10,9 +10,9 @@ import database
 from material import Material
 from properties import MaterialProperties
 from tests import StressStrainTest
+import utils
 from utils import Loop, MatSelect, SafetyAna, pa_to_mpa
 
-# Directory and file management via pathlib
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 JSON_FILE = DATA_DIR / "test_results.json"
@@ -20,16 +20,9 @@ CSV_FILE = DATA_DIR / "test_results.csv"
 
 def generate_simulated_test_data() -> tuple[float, float, float, float]:
     """Generates realistic simulated mechanical tensile test parameters using random."""
-    # Tensile loads commonly range from 10 kN to 150 kN
     force = round(random.uniform(10_000.0, 150_000.0), 2)
-
-    # Cylindrical or flat specimen cross-section area (approx 50 mm² to 500 mm²)
     area = round(random.uniform(0.00005, 0.00050), 6)
-
-    # Standard specimen gauge length (0.05 m to 0.50 m)
     orig_len = round(random.uniform(0.05, 0.50), 4)
-
-    # Elastic-to-plastic elongation (0.05 mm to 4.0 mm)
     changed_len = round(random.uniform(0.00005, 0.00400), 6)
 
     print("\n--- SIMULATED TEST BENCH DATA GENERATED ---")
@@ -103,16 +96,21 @@ def load_results_from_json(file_path: Path = JSON_FILE) -> list:
         return []
 
 def sync_to_material_object(name: str) -> Material:
-    """Wraps dictionary/database entries into a Material instance for tests.py."""
-    import utils
+    """Retrieves or builds a Material domain instance using database.py and utils."""
+    mat_obj = database.get_material(name)
+    if mat_obj is not None:
+        return mat_obj
 
-    mat_info = utils.materials[name]
-    props = MaterialProperties(
-        density=7850.0,
-        yield_strength=float(mat_info["yield_strength"]),
-        typical_youngs_modulus=float(mat_info["youngs_modulus"]),
-    )
-    return Material(name=name, properties=props)
+    if name in utils.materials:
+        mat_info = utils.materials[name]
+        database.add_material(
+            material=name,
+            yield_strength=float(mat_info["yield_strength"]),
+            youngs_modulus=float(mat_info["youngs_modulus"]),
+        )
+        return database.get_material(name)
+
+    raise KeyError(f"Material '{name}' not found in registry or database.")
 
 def main():
     session_results = load_results_from_json()
@@ -122,7 +120,14 @@ def main():
         if not material_name:
             break
 
-        # Let user decide whether to input manually or generate simulated data
+        if material_name in utils.materials and database.get_material(material_name) is None:
+            mat_info = utils.materials[material_name]
+            database.add_material(
+                material=material_name,
+                yield_strength=float(mat_info["yield_strength"]),
+                youngs_modulus=float(mat_info["youngs_modulus"]),
+            )
+
         print("\nInput Mode:")
         print("[1] Enter manual test parameters")
         print("[2] Generate simulated test data (Random)")
@@ -137,10 +142,8 @@ def main():
                 break
             force, area, orig_len, changed_len = measurements
 
-        # Build class instance for tests.py
         material_obj = sync_to_material_object(material_name)
 
-        # Execute tests.py verification
         test = StressStrainTest(
             material=material_obj,
             force=force,
@@ -150,13 +153,11 @@ def main():
         )
         test.display_results()
 
-        # Run safety evaluation through utils.py
-        SafetyAna(material_name, test.stress)
+        stress_in_mpa = pa_to_mpa(test.stress)
+        SafetyAna(material_name, stress_in_mpa)
 
-        # Completion timestamp
         completion_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-        # Package test attributes into a dictionary for JSON/CSV storage
         test_record = {
             "material": test.material.name,
             "force_N": round(test.force, 2),

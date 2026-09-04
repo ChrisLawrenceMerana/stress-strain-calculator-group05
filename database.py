@@ -13,9 +13,19 @@ materials_database = {
 units = ("N", "m²", "m", "Pa")
 
 def get_material(material: str):
-    """Retrieve properties for a material"""
-    material = material.title()
-    return materials_database.get(material)
+    """Retrieve properties for a material case-insensitively."""
+    if material in materials_database:
+        return materials_database[material]
+    
+    titled = material.strip().title()
+    if titled in materials_database:
+        return materials_database[titled]
+
+    for name, mat_obj in materials_database.items():
+        if name.lower() == material.strip().lower():
+            return mat_obj
+            
+    return None
 
 def add_material(material: str, yield_strength: float, youngs_modulus: float, density: float = 5000.0):
     """Adds a new material with its yield strength (MPa) and Young's modulus (GPa) to the database"""
@@ -24,7 +34,8 @@ def add_material(material: str, yield_strength: float, youngs_modulus: float, de
         yield_strength=yield_strength,
         typical_youngs_modulus=youngs_modulus,
     )
-    materials_database[material.title()] = Material(material.title(), props)
+    name = material.strip().title()
+    materials_database[name] = Material(name, props)
 
 def list_materials():
     """Returns a list of all available material names"""

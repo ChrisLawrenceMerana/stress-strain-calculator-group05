@@ -135,7 +135,7 @@ def SafetyAna(chosen: str, stress_mpa: float):
     print("         SAFETY ANALYSIS          ")
     print("=" * 35)
     print(f"Material                 : {chosen}")
-    print(f"Applied Stress           : {stress_mpa:.2f} Pa")
+    print(f"Applied Stress           : {stress_mpa:.2f} MPa")
     print(f"Yield Strength           : {ys:.2f} MPa")
     print(f"Factor of Safety         : {factor:.2f}")
     print(f"Verdict                  : {verdict}")
