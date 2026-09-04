@@ -4,6 +4,21 @@ materials={
             "Aluminum": {"yield_strength": 95, "youngs_modulus": 69},
             "Titanium": {"yield_strength": 880, "youngs_modulus": 114}
         }
+
+def Loop():
+    while True:
+        try:
+            start=int(input("Welcome to the Stress and Strain Calculator! Press 1 to begin calculating, and 2 to exit the program! "))
+            if start==1:
+                    pass
+            elif start==2:
+                break
+            else:
+                print("Invalid input. Please 1 to continue or 2 to exit.")
+                continue
+        except ValueError, TypeError:
+            print("Invalid input. Please 1 to continue or 2 to exit.")
+
 #Material selection
 def MatSelect():
     """Presents a selection of predetermined materials to select, with the option of creating a custom one if desired.
