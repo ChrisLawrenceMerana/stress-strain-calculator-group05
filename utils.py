@@ -1,3 +1,4 @@
+from pathlib import Path
 """Module that contains reusable calculation and conversion utilities."""
 
 materials={
@@ -92,3 +93,22 @@ def SafetyAna():
             print("Error. Invalid input recieved.")
         print(f'{load} - FACTOR OF SAFETY: {factor}')
         
+def ensure_directory(dir_path: str | Path = "data") -> Path:
+    """Creates a directory if it does not exist and returns its resolved Path."""
+    path = Path(dir_path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def get_filepath(filename: str, dir_path: str | Path = "data") -> Path:
+    """Constructs and returns a safe file path inside the specified directory."""
+    target_dir = ensure_directory(dir_path)
+    return target_dir / filename
+
+
+def list_files(
+    dir_path: str | Path = "data", pattern: str = "*.*"
+) -> list[Path]:
+    """Lists all files matching a specific pattern inside the target directory."""
+    target_dir = ensure_directory(dir_path)
+    return list(target_dir.glob(pattern))
