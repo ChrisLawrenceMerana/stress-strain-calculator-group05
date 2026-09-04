@@ -29,7 +29,7 @@ def Loop():
             if applied>0 and cross>0 and original>0 and changed>0: 
                 print("All values valid! Calculating...")
                 stress=(applied/cross)/1000000
-                strain=original/changed
+                strain=changed/original
                 print(f'Stress: {stress} MPa, Strain: {strain}')
                 return stress
 
