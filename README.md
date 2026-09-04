@@ -7,9 +7,9 @@
 | :--- | :--- | :--- | :--- |
 | Cabalfin | Task 1 – Basic Stress and Strain Calculator | @AljurCabalfin | Created the tests module and integrated file and directory management using pathlib |
 | Ello | Task 2 – Control Structures and Validation | @ClarenceJohnEllo | Created the utils module and integrated test timestamps using datetimes |
-| Galleto | Task 3 – Data Structures and Test History | @SherylJaneGalleto | Created the tests module and integrated saving and loading results to json |
-| Meraña | Task 4 – Functions and Modular Programming | @ChrisLawrenceMerana | Created the material and properties module, integrated random simulated data using random |
-| Moises | Task 5 – Object-Oriented Stress and Strain System | @MacieMoises | Created the database module and integrated test data export to csv |
+| Galleto | Task 4 – Functions and Modular Programming | @SherylJaneGalleto | Created the tests module and integrated saving and loading results to json |
+| Meraña | Task 5 – Object-Oriented Stress and Strain System | @ChrisLawrenceMerana | Created the material and properties module, integrated random simulated data using random |
+| Moises | Task 3 – Data Structures and Test History | @MacieMoises | Created the database module and integrated test data export to csv |
 
 ### Primary Responsibilities
 
@@ -44,17 +44,16 @@ The Stress and Strain Analysis System is an engineering application designed to 
   * `dataclasses`
   * `typing`
 
+## Repository Structure
+* **`main.py`**: The primary application that handles user interaction, test mode, data synchronization between modules, and file persistence (JSON/CSV) via pathlib.
+* **`material.py`**: Contains the object-oriented material domain hierarchy, featuring the base Material class and specialized subclasses (`Metal`, `Plastic`, `Composite`).
+* **`properties.py`**: Defines the MaterialProperties dataclass responsible for storing and validating base physical attributes (density, yield strength, and Young's modulus).
+* **`database.py`**: Acts as the central registry for standard material instances, supporting material lookups and custom material additions.
+* **`tests.py`**: Encapsulates tensile test logic within the StressStrainTest class to compute stress, strain, Young's modulus, factor of safety, and state.
+* **`utils.py`**: Provides pure calculation functions, unit conversion helpers (Pa, MPa, GPa), evaluations, and prompts.
+* **`README.md`**: Project documentation and repository overview.
+
 ## How to Run the Program
 Run the main entry script from your terminal:
-
 ```bash
 python main.py
-
-## Repository Structure
-* **`main.py`**: The primary application that handles user interaction, test mode, data synchronization between modules, and file persistence (JSON/CSV) via pathlib[cite: 6].
-* **`material.py`**: Contains the object-oriented material domain hierarchy, featuring the base Material class and specialized subclasses (`Metal`, `Plastic`, `Composite`)[cite: 7].
-* **`properties.py`**: Defines the MaterialProperties dataclass responsible for storing and validating base physical attributes (density, yield strength, and Young's modulus)[cite: 1].
-* **`database.py`**: Acts as the central registry for standard material instances, supporting material lookups and custom material additions[cite: 5].
-* **`tests.py`**: Encapsulates tensile test logic within the StressStrainTest class to compute stress, strain, Young's modulus, factor of safety, and state[cite: 3].
-* **`utils.py`**: Provides pure calculation functions, unit conversion helpers (Pa, MPa, GPa), evaluations, and prompts[cite: 4].
-* **`README.md`**: Project documentation and repository overview[cite: 2].
