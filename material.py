@@ -6,22 +6,22 @@ from properties import MaterialProperties
 class Material:
     """Base class for all materials."""
 
-    def __init__ (self, name: str, properties: MaterialProperties):
+    def __init__(self, name: str, properties: MaterialProperties):
         self.name = name
         self.properties = properties
 
     def __str__(self) -> str:
         return f"{self.name} (Density: {self.properties.density} kg/m³)"
 
-    def can_withstand_stress (self, stress: float) -> bool:
-        """Check if the material can withstand the given stress."""
+    def can_withstand_stress(self, stress: float) -> bool:
+        """Check if the material can withstand the given stress in MPa."""
         return stress < self.properties.yield_strength
 
     def to_dict(self) -> Dict[str, Any]:
-        return{
+        return {
             "name": self.name,
-            "type": self._class__.__name__,
-            "properties": self.properties.to_dict()
+            "type": self.__class__.__name__,
+            "properties": self.properties.to_dict(),
         }
 
 class Metal(Material):
@@ -34,17 +34,18 @@ class Metal(Material):
         is_ferrous: bool = False,
         ductility_pct: float = 0.0,
     ):
-        super().__init__(name,properties)
-        if ductility_pct <0:
+        super().__init__(name, properties)
+        if ductility_pct < 0:
             raise ValueError("Ductility percentage must be non-negative")
         self.is_ferrous = is_ferrous
         self.ductility_pct = ductility_pct
 
     def __str__(self) -> str:
         ferrous_text = "Ferrous" if self.is_ferrous else "Non-ferrous"
-        return(
-            f"{self.name}({ferrous_text} metal, "
-            f"Density: {self.properties.density}kg/m³, "
+        return (
+            f"{self.name} ({ferrous_text} Metal, "
+            f"Density: {self.properties.density} kg/m³, "
+            f"Yield Strength: {self.properties.yield_strength} MPa, "
             f"Ductility: {self.ductility_pct}%)"
         )
 
@@ -66,10 +67,18 @@ class Plastic(Material):
         self.glass_transition_temp = glass_transition_temp
 
     def __str__(self) -> str:
-        tg_val = f"self.glass_transition_temp)°C" if self.glass_transition_temp is not None else "N/A"
-        return f"{self.name} (Polymer, Tg: {tg_val}, Density: {self.properties.density} kg/m³)"
+        tg_val = (
+            f"{self.glass_transition_temp}°C"
+            if self.glass_transition_temp is not None
+            else "N/A"
+        )
+        return (
+            f"{self.name} (Polymer, Tg: {tg_val}, "
+            f"Density: {self.properties.density} kg/m³, "
+            f"Yield Strength: {self.properties.yield_strength} MPa)"
+        )
 
-    def to_dict(self) -> Dict[str,Any]:
+    def to_dict(self) -> Dict[str, Any]:
         data = super().to_dict()
         data["glass_transition_temp"] = self.glass_transition_temp
         return data
@@ -81,13 +90,17 @@ class Composite(Material):
         self,
         name: str,
         properties: MaterialProperties,
-        reinforcement_type: str,   
+        reinforcement_type: str,
     ):
         super().__init__(name, properties)
         self.reinforcement_type = reinforcement_type
 
     def __str__(self) -> str:
-        return f"{self.name} (Composite [{self.reinforcement_type}], Density: {self.properties.density} kg/m³)"
+        return (
+            f"{self.name} (Composite [{self.reinforcement_type}], "
+            f"Density: {self.properties.density} kg/m³, "
+            f"Yield Strength: {self.properties.yield_strength} MPa)"
+        )
 
     def to_dict(self) -> Dict[str, Any]:
         data = super().to_dict()
