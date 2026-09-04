@@ -1,9 +1,11 @@
 from typing import List, Optional
 from material import Material
 
+
 def calculate_stress(force: float, area: float) -> float:
     """Calculates engineering stress in Pascals (Pa)."""
     return force / area
+
 
 def calculate_strain(change_in_length: float, original_length: float) -> float:
     """Calculates engineering strain (dimensionless)."""
@@ -23,6 +25,7 @@ def calculate_factor_of_safety(yield_strength: float, stress: float) -> float:
         return 0.0
     return yield_strength / stress
 
+
 class StressStrainTest:
     """Represents a single stress-strain test execution."""
 
@@ -35,7 +38,9 @@ class StressStrainTest:
         change_in_length: float,
     ):
         if force <= 0 or area <= 0 or original_length <= 0:
-            raise ValueError("Force, area, and original length must be greater than zero.")
+            raise ValueError(
+                "Force, area, and original length must be greater than zero."
+            )
 
         self.material = material
         self.force = force
@@ -44,7 +49,9 @@ class StressStrainTest:
         self.change_in_length = change_in_length
 
         self.stress = calculate_stress(self.force, self.area)
-        self.strain = calculate_strain(self.change_in_length, self.original_length)
+        self.strain = calculate_strain(
+            self.change_in_length, self.original_length
+        )
         self.youngs_modulus = calculate_youngs_modulus(self.stress, self.strain)
         self.safety_factor = calculate_factor_of_safety(
             self.material.properties.yield_strength * 1e6, self.stress
@@ -65,8 +72,14 @@ class StressStrainTest:
         print(f"Original Length          : {self.original_length:.4f} m")
         print(f"Change in Length         : {self.change_in_length:.6f} m")
         print("-" * 35)
-        print(f"Calculated Stress        : {self.stress:,.2f} Pa ({self.stress / 1e6:.2f} MPa)")
-        print(f"Calculated Strain        : {self.strain:.6f} (or {self.strain * 100:.4f}%)")
-        print(f"Young's Modulus          : {self.youngs_modulus:,.2f} Pa ({self.youngs_modulus / 1e9:.2f} GPa)")
+        print(
+            f"Calculated Stress        : {self.stress:,.2f} Pa ({self.stress / 1e6:.2f} MPa)"
+        )
+        print(
+            f"Calculated Strain        : {self.strain:.6f} (or {self.strain * 100:.4f}%)"
+        )
+        print(
+            f"Young's Modulus          : {self.youngs_modulus:,.2f} Pa ({self.youngs_modulus / 1e9:.2f} GPa)"
+        )
         print(f"Safety Factor            : {self.safety_factor:.2f}")
         print("=" * 35)
