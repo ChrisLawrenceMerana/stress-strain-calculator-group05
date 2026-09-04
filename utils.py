@@ -31,6 +31,7 @@ def Loop():
                 stress=(applied/cross)/1000000
                 strain=original/changed
                 print(f'Stress: {stress} MPa, Strain: {strain}')
+                return stress
 
 #Error Handling
             else:
@@ -61,19 +62,19 @@ def MatSelect():
         select=int(input("Enter a number corresponding to the desired material: "))
 
         if select==1:
-            chosen="Steel"
+            return "Steel"
         elif select==2:
-            chosen="Aluminum"
+            return "Aluminum"
         elif select==3:
-            chosen="Titanium"
+            return "Titanium"
         elif select==4:
             chosen=input("Enter the material's name: ")
             customstrength=float(input("Enter the material's Yield Strength: "))
             custommodulus=float(input("Enter the material's Young's Modulus"))
             materials[chosen]={"yield_strength": customstrength, "youngs_modulus": custommodulus}
+            return chosen
         else:
             raise ValueError("Invalid input!")
-        return materials[chosen]
     
     except (TypeError, ValueError):
         print('Invalid Input!')
@@ -85,10 +86,9 @@ def SafetyAna(chosen, stress):
         load=materials[chosen]["yield_strength"]-stress
         factor=materials[chosen]["yield_strength"]/stress
         if load>materials[chosen]["yield_strength"]*0.10:
-            load='SAFE'
+            verdict='SAFE'
         elif load<=materials[chosen]["yield_strength"]*0.10:
-            load='CAUTION'
+            verdict='CAUTION'
         else:
             print("Error. Invalid input recieved.")
-        print(f'{load} - FACTOR OF SAFETY: {factor}')
-        
+        print(f'{verdict} - FACTOR OF SAFETY: {factor}')
