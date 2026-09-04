@@ -1,10 +1,36 @@
-"""Main stress-strain test program."""
+"""Main stress-strain test program with JSON persistence."""
 
+import json
 import database
 from material import Material
 from properties import MaterialProperties
 from tests import StressStrainTest
 from utils import Loop, MatSelect, SafetyAna, pa_to_mpa
+
+
+def save_results_to_json(results_data: list, filename: str = "test_results.json") -> None:
+    """Saves a list of test result dictionaries into a JSON file."""
+    try:
+        with open(filename, "w") as file:
+            json.dump(results_data, file, indent=4)
+        print(f"\nResults successfully saved to '{filename}'.")
+    except Exception as e:
+        print(f"\nError saving results: {e}")
+
+
+def load_results_from_json(filename: str = "test_results.json") -> list:
+    """Loads and returns test result data from a JSON file."""
+    try:
+        with open(filename, "r") as file:
+            data = json.load(file)
+        print(f"Previous results successfully loaded from '{filename}'.\n")
+        return data
+    except FileNotFoundError:
+        return []
+    except json.JSONDecodeError:
+        print(f"Error: Failed to parse '{filename}'. File may be corrupted.\n")
+        return []
+
 
 def sync_to_material_object(name: str) -> Material:
     """Wraps dictionary/database entries into a Material instance for tests.py."""
@@ -18,7 +44,11 @@ def sync_to_material_object(name: str) -> Material:
     )
     return Material(name=name, properties=props)
 
+
 def main():
+    # Load previous session history if available
+    session_results = load_results_from_json()
+
     while True:
         material_name = MatSelect()
         if not material_name:
@@ -47,11 +77,31 @@ def main():
         # Run safety evaluation through utils.py
         SafetyAna(material_name, test.stress)
 
+        # Package test attributes into a dictionary for JSON storage
+        test_record = {
+            "material": test.material.name,
+            "force_N": test.force,
+            "area_m2": test.area,
+            "original_length_m": test.original_length,
+            "change_in_length_m": test.change_in_length,
+            "stress_Pa": test.stress,
+            "strain": test.strain,
+            "youngs_modulus_Pa": test.youngs_modulus,
+            "safety_factor": getattr(test, "safety_factor", 0.0),
+            "failed": test.will_fail() if hasattr(test, "will_fail") else False,
+        }
+        session_results.append(test_record)
+
         # Query user to continue or exit after completing the run
         again = input("\nPerform another calculation? (y/n): ").strip().lower()
         if again != "y":
             print("Exiting calculator.")
             break
+
+    # Save all test records to JSON upon exiting
+    if session_results:
+        save_results_to_json(session_results)
+
 
 if __name__ == "__main__":
     main()
