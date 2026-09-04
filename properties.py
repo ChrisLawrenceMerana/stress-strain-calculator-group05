@@ -11,7 +11,7 @@ class MaterialProperties:
     yield_strength: float  # MPa
     typical_youngs_modulus: float  # GPa
 
-    def __post_init__ (self) -> None:
+    def __post_init__(self) -> None:
         """Validate Properties"""
         if self.density <= 0:
             raise ValueError("Density must be positive")
