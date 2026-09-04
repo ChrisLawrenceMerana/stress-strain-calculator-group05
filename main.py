@@ -1,60 +1,57 @@
-"""Entry point demonstrating tests module integration."""
+"""Main stress-strain test program."""
 
+import database
+from material import Material
+from properties import MaterialProperties
 from tests import StressStrainTest
-from database import units, add_material, get_material, list_materials
-from utils import Loop, MatSelect, SafetyAna
+from utils import Loop, MatSelect, SafetyAna, pa_to_mpa
 
-def run_tests_demo(material):
-    """Executes and displays a stress-strain test using the tests module."""
-    force = 50000.0  # N
-    area = 0.00025  # m²
-    orig_len = 2.0  # m
-    change_len = 0.001  # m
+def sync_to_material_object(name: str) -> Material:
+    """Wraps dictionary/database entries into a Material instance for tests.py."""
+    import utils
 
-    test = StressStrainTest(
-        material=material,
-        force=force,
-        area=area,
-        original_length=orig_len,
-        change_in_length=change_len,
+    mat_info = utils.materials[name]
+    props = MaterialProperties(
+        density=7850.0,
+        yield_strength=float(mat_info["yield_strength"]),
+        typical_youngs_modulus=float(mat_info["youngs_modulus"]),
     )
-    test.display_results()
-    return test
+    return Material(name=name, properties=props)
 
-def run_database_demo():
-    """Executes and displays material management operations"""
-    print("Database Module Demo:")
+def main():
+    while True:
+        material_name = MatSelect()
+        if not material_name:
+            break
 
-    #List the materials
-    print(f"Initial Materials: {list_materials()}")
-    #Add new material
-    add_material("Copper", yield_strength=80000000.0, youngs_modulus=100000000000.0)
-    print("Added 'Copper' to the database")
+        measurements = Loop()
+        if measurements is None:
+            print("Exiting calculator.")
+            break
 
-    #Display steel properties
-    steel = get_material("Steel")
-    if steel:
-        print("\nSteel Properties:")
-        print(f" - Yield Strength: {steel['yield_strength']:,.1f} {units[3]}")
-        print(f" - Young's Modulus: {steel['youngs_modulus']:,.1f} {units[3]}")
+        force, area, orig_len, changed_len = measurements
 
-    #Display updated material list
-    print(f"Updated Materials: {list_materials()}")
+        # Build class instance for tests.py
+        material_obj = sync_to_material_object(material_name)
 
-run_database_demo()
+        # Execute tests.py verification
+        test = StressStrainTest(
+            material=material_obj,
+            force=force,
+            area=area,
+            original_length=orig_len,
+            change_in_length=changed_len,
+        )
+        test.display_results()
 
-def run_utils_demo():
-    """Executes and displays reusable utilities"""
+        # Run safety evaluation through utils.py
+        SafetyAna(material_name, test.stress)
 
-    #Asks for the material to be used
-    final_material= MatSelect()
-    print("Material selection confirmed!")
+        # Query user to continue or exit after completing the run
+        again = input("\nPerform another calculation? (y/n): ").strip().lower()
+        if again != "y":
+            print("Exiting calculator.")
+            break
 
-    #Queries the necessary values needed for calculation
-    final_stress=Loop()
-    print("Calculated!")
-
-    #Makes safety analysis after necessary values and materials are found
-    SafetyAna(final_material, final_stress)
-
-run_utils_demo()
+if __name__ == "__main__":
+    main()
