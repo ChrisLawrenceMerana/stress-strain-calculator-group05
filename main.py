@@ -1,4 +1,4 @@
-"""Main stress-strain test program with JSON persistence."""
+"""Main stress-strain test program."""
 
 import csv
 import json
@@ -8,7 +8,6 @@ from material import Material
 from properties import MaterialProperties
 from tests import StressStrainTest
 from utils import Loop, MatSelect, SafetyAna, pa_to_mpa
-
 
 def save_results_to_json(results_data: list, filename: str = "test_results.json") -> None:
     """Saves a list of test result dictionaries into a JSON file."""
@@ -24,13 +23,14 @@ def save_results_to_csv(results_data: list, filename: str = "test_results.csv") 
     try:
         with open(filename, "w", newline="") as file:
             writer = csv.writer(file)
-            
+
             writer.writerow([
                 "Material", "Force (N)", "Area (m²)", "Original Length (m)", 
                 "Change in Length (m)", "Stress (Pa)", "Strain", 
+                "Youngs Modulus (Pa)", "Safety Factor", "Failed"
                 "Youngs Modulus (Pa)", "Safety Factor", "Failed", "Timestamp"
             ])
-            
+
             for test in results_data:
                 writer.writerow([
                     test["material"],
@@ -42,6 +42,7 @@ def save_results_to_csv(results_data: list, filename: str = "test_results.csv") 
                     test["strain"],
                     test["youngs_modulus_Pa"],
                     test["safety_factor"],
+                    test["failed"],
                     test["failed"],
                     test["timestamp"]
                 ])
@@ -62,7 +63,6 @@ def load_results_from_json(filename: str = "test_results.json") -> list:
         print(f"Error: Failed to parse '{filename}'. File may be corrupted.\n")
         return []
 
-
 def sync_to_material_object(name: str) -> Material:
     """Wraps dictionary/database entries into a Material instance for tests.py."""
     import utils
@@ -74,7 +74,6 @@ def sync_to_material_object(name: str) -> Material:
         typical_youngs_modulus=float(mat_info["youngs_modulus"]),
     )
     return Material(name=name, properties=props)
-
 
 def main():
     # Load previous session history if available
@@ -137,7 +136,6 @@ def main():
     if session_results:
         save_results_to_json(session_results)
         save_results_to_csv(session_results)
-
 
 if __name__ == "__main__":
     main()

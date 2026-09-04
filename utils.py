@@ -1,4 +1,3 @@
-from pathlib import Path
 """Module that contains reusable calculation and conversion utilities."""
 
 materials = {
@@ -129,38 +128,6 @@ def SafetyAna(chosen: str, stress_mpa: float):
         print(f"Error: Material '{chosen}' not found.")
         return
 
-#SafetyAnalysis
-def SafetyAna():
-        """Carries out calculations of Safety Analysis based on inputs from the MatSelect and the looped calculatorfunction."""
-        load=materials[chosen]["yield_strength"]-stress
-        factor=materials[chosen]["yield_strength"]/stress
-        if load>materials[chosen]["yield_strength"]*0.10:
-            load='SAFE'
-        elif load<=materials[chosen]["yield_strength"]*0.10:
-            load='CAUTION'
-        else:
-            print("Error. Invalid input recieved.")
-        print(f'{load} - FACTOR OF SAFETY: {factor}')
-        
-def ensure_directory(dir_path: str | Path = "data") -> Path:
-    """Creates a directory if it does not exist and returns its resolved Path."""
-    path = Path(dir_path)
-    path.mkdir(parents=True, exist_ok=True)
-    return path
-
-
-def get_filepath(filename: str, dir_path: str | Path = "data") -> Path:
-    """Constructs and returns a safe file path inside the specified directory."""
-    target_dir = ensure_directory(dir_path)
-    return target_dir / filename
-
-
-def list_files(
-    dir_path: str | Path = "data", pattern: str = "*.*"
-) -> list[Path]:
-    """Lists all files matching a specific pattern inside the target directory."""
-    target_dir = ensure_directory(dir_path)
-    return list(target_dir.glob(pattern))
     ys = materials[chosen]["yield_strength"]
     factor, verdict = evaluate_safety_margin(ys, stress_mpa)
 
