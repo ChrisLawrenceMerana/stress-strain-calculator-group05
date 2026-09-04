@@ -19,8 +19,26 @@ def Loop():
             else:
                 print("Invalid input. Please 1 to continue or 2 to exit.")
                 continue
-        except ValueError, TypeError:
-            print("Invalid input. Please 1 to continue or 2 to exit.")
+
+            applied=float(input("Enter Applied Force: "))
+            cross=float(input("Enter Cross-Sectional Area: "))
+            original=float(input("Enter Original Length: "))
+            changed=float(input("Enter Changed Length: "))
+        
+#Input Validation
+            if applied>0 and cross>0 and original>0 and changed>0: 
+                print("All values valid! Calculating...")
+                stress=(applied/cross)/1000000
+                strain=original/changed
+                print(f'Stress: {stress} MPa, Strain: {strain}')
+
+#Error Handling
+            else:
+                print("Negative/Null Value detected. Please try again.")
+                continue
+        except ValueError:
+            print("Incorrect Value type detected. Please try again.")
+            continue
 
 #Material selection
 def MatSelect():
@@ -63,7 +81,7 @@ def MatSelect():
 
 #SafetyAnalysis
 def SafetyAna():
-        """Carries out calculations of Safety Analysis based on inputs from the MatSelect function."""
+        """Carries out calculations of Safety Analysis based on inputs from the MatSelect and the looped calculatorfunction."""
         load=materials[chosen]["yield_strength"]-stress
         factor=materials[chosen]["yield_strength"]/stress
         if load>materials[chosen]["yield_strength"]*0.10:
