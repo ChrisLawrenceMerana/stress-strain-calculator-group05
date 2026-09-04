@@ -11,21 +11,17 @@ def pa_to_mpa(pressure_pa: float) -> float:
     """Converts pressure from Pascals (Pa) to Megapascals (MPa)."""
     return pressure_pa / 1e6
 
-
 def mpa_to_pa(pressure_mpa: float) -> float:
     """Converts pressure from Megapascals (MPa) to Pascals (Pa)."""
     return pressure_mpa * 1e6
-
 
 def pa_to_gpa(pressure_pa: float) -> float:
     """Converts pressure from Pascals (Pa) to Gigapascals (GPa)."""
     return pressure_pa / 1e9
 
-
 def gpa_to_pa(pressure_gpa: float) -> float:
     """Converts pressure from Gigapascals (GPa) to Pascals (Pa)."""
     return pressure_gpa * 1e9
-
 
 # Reusable Calculations
 def calculate_stress(force: float, area: float) -> float:
@@ -34,20 +30,17 @@ def calculate_stress(force: float, area: float) -> float:
         raise ValueError("Cross-sectional area must be greater than zero.")
     return force / area
 
-
 def calculate_strain(change_in_length: float, original_length: float) -> float:
     """Calculates engineering strain."""
     if original_length <= 0:
         raise ValueError("Original length must be greater than zero.")
     return change_in_length / original_length
 
-
 def calculate_youngs_modulus(stress_pa: float, strain: float) -> float:
     """Calculates Young's modulus in Pascals."""
     if strain == 0:
         return 0.0
     return stress_pa / strain
-
 
 def evaluate_safety_margin(yield_strength_mpa: float, stress_mpa: float) -> tuple[float, str]:
     """Calculates safety factor and operational verdict."""
@@ -65,7 +58,6 @@ def evaluate_safety_margin(yield_strength_mpa: float, stress_mpa: float) -> tupl
         verdict = "SAFE"
 
     return factor, verdict
-
 
 # Interactive Handlers
 def Loop():
@@ -99,7 +91,6 @@ def Loop():
         except ValueError:
             print("Incorrect Value type detected. Please try again.")
 
-
 def MatSelect():
     """Selects or creates a material in the local dictionary."""
     while True:
@@ -131,7 +122,6 @@ def MatSelect():
         except (TypeError, ValueError):
             print("Invalid input! Numbers required.")
 
-
 def SafetyAna(chosen: str, stress_mpa: float):
     """Carries out safety analysis and prints status."""
     if chosen not in materials:
@@ -145,7 +135,7 @@ def SafetyAna(chosen: str, stress_mpa: float):
     print("         SAFETY ANALYSIS          ")
     print("=" * 35)
     print(f"Material                 : {chosen}")
-    print(f"Applied Stress           : {stress_mpa:.2f} MPa")
+    print(f"Applied Stress           : {stress_mpa:.2f} Pa")
     print(f"Yield Strength           : {ys:.2f} MPa")
     print(f"Factor of Safety         : {factor:.2f}")
     print(f"Verdict                  : {verdict}")
