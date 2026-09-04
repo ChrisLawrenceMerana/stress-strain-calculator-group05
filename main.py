@@ -2,6 +2,7 @@
 
 import csv
 import json
+import datetime
 import database
 from material import Material
 from properties import MaterialProperties
@@ -27,7 +28,7 @@ def save_results_to_csv(results_data: list, filename: str = "test_results.csv") 
             writer.writerow([
                 "Material", "Force (N)", "Area (m²)", "Original Length (m)", 
                 "Change in Length (m)", "Stress (Pa)", "Strain", 
-                "Youngs Modulus (Pa)", "Safety Factor", "Failed"
+                "Youngs Modulus (Pa)", "Safety Factor", "Failed", "Timestamp"
             ])
             
             for test in results_data:
@@ -41,7 +42,8 @@ def save_results_to_csv(results_data: list, filename: str = "test_results.csv") 
                     test["strain"],
                     test["youngs_modulus_Pa"],
                     test["safety_factor"],
-                    test["failed"]
+                    test["failed"],
+                    test["timestamp"]
                 ])
         print(f"Results successfully saved to '{filename}'.")
     except Exception as e:
@@ -106,6 +108,9 @@ def main():
         # Run safety evaluation through utils.py
         SafetyAna(material_name, test.stress)
 
+        # Marks time of completion through the datetime module
+        completiontime= datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         # Package test attributes into a dictionary for JSON storage
         test_record = {
             "material": test.material.name,
@@ -118,6 +123,7 @@ def main():
             "youngs_modulus_Pa": test.youngs_modulus,
             "safety_factor": getattr(test, "safety_factor", 0.0),
             "failed": test.will_fail() if hasattr(test, "will_fail") else False,
+            "timestamp": completiontime,
         }
         session_results.append(test_record)
 
