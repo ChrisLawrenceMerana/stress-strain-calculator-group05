@@ -75,12 +75,12 @@ def MatSelect():
             raise ValueError("Invalid input!")
         return materials[chosen]
     
-    except TypeError, ValueError:
+    except (TypeError, ValueError):
         print('Invalid Input!')
         return
 
 #SafetyAnalysis
-def SafetyAna():
+def SafetyAna(chosen, stress):
         """Carries out calculations of Safety Analysis based on inputs from the MatSelect and the looped calculatorfunction."""
         load=materials[chosen]["yield_strength"]-stress
         factor=materials[chosen]["yield_strength"]/stress
