@@ -1,13 +1,8 @@
 """Entry point demonstrating tests module integration."""
 
-from tests import (
-    StressStrainTest,
-    calculate_factor_of_safety,
-    calculate_strain,
-    calculate_stress,
-    calculate_youngs_modulus,
-)
-
+from tests import StressStrainTest
+from database import units, add_material, get_material, list_materials
+from utils import Loop, MatSelect, SafetyAna
 
 def run_tests_demo(material):
     """Executes and displays a stress-strain test using the tests module."""
@@ -25,14 +20,6 @@ def run_tests_demo(material):
     )
     test.display_results()
     return test
-
-
-from database import (
-    units,
-    add_material,
-    get_material,
-    list_materials,
-)
 
 def run_database_demo():
     """Executes and displays material management operations"""
@@ -55,12 +42,6 @@ def run_database_demo():
     print(f"Updated Materials: {list_materials()}")
 
 run_database_demo()
-
-from utils import (
-    Loop,
-    MatSelect,
-    SafetyAna
-)
 
 def run_utils_demo():
     """Executes and displays reusable utilities"""
