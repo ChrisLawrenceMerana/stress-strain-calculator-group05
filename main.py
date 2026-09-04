@@ -55,3 +55,25 @@ def run_database_demo():
     print(f"Updated Materials: {list_materials()}")
 
 run_database_demo()
+
+from utils import (
+    Loop,
+    MatSelect,
+    SafetyAna
+)
+
+def run_utils_demo():
+    """Executes and displays reusable utilities"""
+
+    #Asks for the material to be used
+    final_material= MatSelect()
+    print("Material selection confirmed!")
+
+    #Queries the necessary values needed for calculation
+    final_stress=Loop()
+    print("Calculated!")
+
+    #Makes safety analysis after necessary values and materials are found
+    SafetyAna(final_material, final_stress)
+
+run_utils_demo()
